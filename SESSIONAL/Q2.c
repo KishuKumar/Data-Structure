@@ -1,0 +1,97 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node{
+    char data;
+    struct node *left;
+    struct node *right;
+};
+int count=0;
+struct node* createTree(){
+    char rootData;
+    int op=0; 
+    struct node* root=(struct node*)malloc(sizeof(struct node));
+    root->left=NULL;
+    root->right=NULL;
+    printf("Enter data: ");
+    scanf(" %c",&rootData);
+    root->data=rootData;
+    printf("Do you want to enter left child of %c(1/0): ",rootData);
+    scanf("%d",&op);
+    if(op==1){
+        root->left=createTree();
+    }
+    printf("Do you want to enter right child of %c(1/0): ",rootData);
+    scanf("%d",&op);
+    if(op==1){
+        root->right=createTree();
+    }
+    
+    return root;
+}
+
+void PreOrder(struct node* root){
+    if(root==NULL){
+        return;
+    }
+    printf("%c\t",root->data);
+    PreOrder(root->left);
+    PreOrder(root->right);
+}
+void PostOrder(struct node* root){
+    if(root==NULL){
+        return;
+    }
+    PostOrder(root->left);
+    PostOrder(root->right);
+    printf("%c\t",root->data);
+}
+
+void inOrder(struct node* root){
+    if(root==NULL){
+        return;
+    }
+    inOrder(root->left);
+    printf("%c\t",root->data);
+    inOrder(root->right);
+}
+struct node* find(struct node* root,int currH,int h){
+    if(root==NULL){
+        return NULL;
+    }
+    else if(currH==h){
+        count++;
+        printf("%d\t",count);
+        if(count==h/2){
+        return root;
+        }
+        else{
+            return NULL;
+        }
+        
+    }
+    else{
+        struct node* lFind=find(root->left,currH+1,h);
+        struct node* rFind=find(root->right,currH+1,h);
+        if(lFind){
+            return lFind;
+        }
+        else{
+            return rFind;
+        }
+    }
+}
+struct node* search(struct node* root,int h){
+    return find(root,1,h);
+}
+
+int main(){
+    struct node* root=createTree();
+    inOrder(root);
+    printf("\n");
+    printf("enter the heiight of h:");
+    
+    int h;
+    scanf("%d",&h);
+    struct node* temp=search(root,h);
+    printf("%c\n",temp->data);
+}
